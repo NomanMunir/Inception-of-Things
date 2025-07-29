@@ -19,4 +19,4 @@ echo "2. Open: https://localhost:8081"
 echo "3. Login with admin / $(cat argocd-password.txt)"
 
 echo "To apply your application:"
-echo "kubectl apply -f argocd/application.yaml"
+echo "kubectl apply -f confs/application.yaml"
