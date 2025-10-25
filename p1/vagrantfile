@@ -1,13 +1,14 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-SERVER_NAME = "server"
+SERVER_NAME = "nmunirS"
 SERVER_IP = "192.168.56.110"
-SERVER_WORKER = "worker"
+SERVER_WORKER = "nmunirSW"
 SERVER_WORKER_IP = "192.168.56.111"
 
 Vagrant.configure("2") do |config|
-  config.vm.box = "ubuntu/jammy64"
+  # Other images: debian/bullseye64, alpine/alpine64, generic/ubuntu2204
+  config.vm.box = "debian/bullseye64"
 
   # Server (Controller) Machine
   config.vm.define SERVER_NAME do |server|
@@ -20,7 +21,7 @@ Vagrant.configure("2") do |config|
     end
     
     # K3s server provisioning
-    # server.vm.provision "shell", path: "./scripts/server_setup.sh", args: [SERVER_IP]
+    server.vm.provision "shell", path: "./scripts/server_setup.sh", args: [SERVER_IP]
   end
   
   # Worker (Agent) Machine
@@ -29,12 +30,12 @@ Vagrant.configure("2") do |config|
     worker.vm.network "private_network", ip: SERVER_WORKER_IP
     worker.vm.provider "virtualbox" do |vb|
       vb.name = SERVER_WORKER
-      vb.memory = 1024
+      vb.memory = 512
       vb.cpus = 1
     end
 
     # K3s worker provisioning
-    # worker.vm.provision "shell", path: "./scripts/worker_setup.sh", args: [SERVER_IP, SERVER_WORKER_IP]
+    worker.vm.provision "shell", path: "./scripts/worker_setup.sh", args: [SERVER_IP, SERVER_WORKER_IP]
   end
 
 end

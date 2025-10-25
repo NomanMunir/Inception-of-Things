@@ -14,9 +14,19 @@ echo "Server IP: $SERVER_IP"
 echo "Updating system packages..."
 apt-get update -y
 
+# Disable Firewall (if applicable)
+systemctl stop ufw || true
+systemctl disable ufw --now || true
+
+
+
+
+echo "Installing required packages..."
+apt-get install -y curl
+
 # Install K3s in server mode
 echo "Installing K3s server..."
-curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC="--write-kubeconfig-mode 644 --tls-san $SERVER_IP --node-ip $SERVER_IP --bind-address $SERVER_IP" sh -
+curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC="--write-kubeconfig-mode 644" sh -
 
 # Wait for K3s to be ready
 echo "Waiting for K3s to be ready..."
@@ -26,11 +36,11 @@ sleep 10
 systemctl status k3s --no-pager
 
 # Setup kubeconfig for vagrant user
-echo "Setting up kubeconfig for vagrant user..."
-mkdir -p /home/vagrant/.kube
-cp /etc/rancher/k3s/k3s.yaml /home/vagrant/.kube/config
-chown vagrant:vagrant /home/vagrant/.kube/config
-chmod 600 /home/vagrant/.kube/config
+# echo "Setting up kubeconfig for vagrant user..."
+# mkdir -p /home/vagrant/.kube
+# cp /etc/rancher/k3s/k3s.yaml /home/vagrant/.kube/config
+# chown vagrant:vagrant /home/vagrant/.kube/config
+# chmod 600 /home/vagrant/.kube/config
 
 # Copy node token for worker nodes
 echo "Copying node token for worker nodes..."

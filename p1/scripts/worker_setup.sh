@@ -40,8 +40,15 @@ NODE_TOKEN=$(cat /vagrant/node-token)
 # Install K3s in agent mode
 echo "Installing K3s agent..."
 
+# Disable Firewall (if applicable)
+systemctl stop ufw || true
+systemctl disable ufw --now || true
+
+echo "Installing required packages..."
+apt-get install -y curl
+
 # Install with inline environment variables (more reliable)
-curl -sfL https://get.k3s.io | K3S_URL="http://$SERVER_IP:6443" K3S_TOKEN="$NODE_TOKEN" INSTALL_K3S_EXEC="--node-ip $WORKER_IP" sh -
+curl -sfL https://get.k3s.io | K3S_URL=https://$SERVER_IP:6443 K3S_TOKEN=$NODE_TOKEN sh -
 
 # Wait for K3s agent to be ready
 echo "Waiting for K3s agent to be ready..."
