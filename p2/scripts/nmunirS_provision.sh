@@ -22,7 +22,7 @@ sudo usermod -aG docker vagrant
 
 #Install k3s in server mode (need multiple try, can randomly fail)
 for i in {1..3}; do
-  if curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC="server --token 12345 --node-ip=192.168.56.110 --flannel-iface=eth1 --docker" sh -s; then
+  if curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC="server --token 12345 --node-ip=192.168.56.110 --flannel-iface=eth1 --docker --disable traefik" sh -s; then
 	break
   else
     if [ $i -eq 3 ]; then

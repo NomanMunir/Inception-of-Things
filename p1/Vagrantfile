@@ -1,44 +1,34 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-machines=[
-  {
-    :hostname => "iaschneiS",
-    :ip => "192.168.56.110",
-    :box => "generic/debian12",
-    :ram => 1024,
-    :cpu => 2,
-    :script => "./scripts/iaschneiS_provision.sh"
-  },
-  {
-    :hostname => "iaschneiSW",
-    :ip => "192.168.56.111",
-    :box => "generic/debian12",
-    :ram => 1024,
-    :cpu => 2,
-    :script => "./scripts/iaschneiSW_provision.sh"
-  }
-]
-
-# The argument '2' corresponds to the config version. 2 is the most recent version. 
 Vagrant.configure("2") do |config|
 
-  machines.each do |machine|
-    config.vm.define machine[:hostname] do |node|
-      node.vm.box = machine[:box]
-      node.vm.hostname = machine[:hostname]
-      node.vm.network "private_network", ip: machine[:ip]
+  BOX_IMAGE = "bento/ubuntu-24.04"
 
-      node.vm.provider "virtualbox" do |vb|
-        vb.gui = false
-        vb.memory = machine[:ram]
-        vb.cpus = machine[:cpu]
-        vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
-        vb.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
-      end
+  config.vm.provider "virtualbox" do |vb|
+    vb.cpus = 1
+    vb.memory = 1024 
+  end
 
-      node.vm.provision "shell", path: machine[:script]
-    end
+  config.vm.box_check_update = false
+
+  # Server (controller node)
+  config.vm.define "nmunirS" do |server|
+    server.vm.box = BOX_IMAGE
+    server.vm.hostname = "nmunirS"
+    
+    server.vm.network "private_network", ip: "192.168.56.110"
+
+    server.vm.provision "shell", path: "./scripts/nmunirS_provision.sh"
+  end
+
+  # Worker (agent node)
+  config.vm.define "nmunirSW" do |worker|
+    worker.vm.box = BOX_IMAGE
+    worker.vm.hostname = "nmunirSW"
+
+    worker.vm.network "private_network", ip: "192.168.56.111"
+
+    worker.vm.provision "shell", path: "./scripts/nmunirSW_provision.sh"
   end
 end
-

@@ -6,7 +6,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/iaschnei/42_IoT_part3_iaschnei.git
+    repoURL: https://github.com/nmunir/42_IoT_part3_nmunir.git
     targetRevision: HEAD
     path: app
   destination:
