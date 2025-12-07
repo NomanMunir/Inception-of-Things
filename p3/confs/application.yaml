@@ -6,9 +6,9 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/nmunir/42_IoT_part3_nmunir.git
+    repoURL: https://github.com/nmunir/Inception-of-Things.git
     targetRevision: HEAD
-    path: app
+    path: p3/repo/app
   destination:
     server: https://kubernetes.default.svc
     namespace: dev
